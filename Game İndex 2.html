@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>VIP Oyun Platformu</title>
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" crossorigin="anonymous" />
+  <style>
+    :root { 
+      --primary: #e63946; 
+      --secondary: #1d3557; 
+      --bg: #121212; 
+      --card-bg: #1e1e1e; 
+      --text: #eee;
+    }
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: 'Roboto', sans-serif; background: var(--bg); color: var(--text); padding-top: 60px; }
+    a { text-decoration: none; color: inherit; }
+    img { display: block; width: 100%; height: auto; }
+
+    header {
+      position: fixed; top: 0; left: 0; width: 100%; background: var(--secondary); z-index: 1000; box-shadow: 0 2px 8px rgba(0, 0, 0, 0.6);
+    }
+
+    .nav-container {
+      max-width: 1200px; margin: auto; display: flex; align-items: center; justify-content: space-between; padding: 10px 20px;
+    }
+
+    .logo {
+      font-size: 2rem; font-weight: 700; color: var(--primary);
+    }
+
+    .menu-btn {
+      font-size: 2rem; cursor: pointer; color: var(--text); margin-right: 10px;
+    }
+
+    .sidebar {
+      position: fixed; top: 0; left: -250px; width: 250px; height: 100%; background: var(--card-bg); padding: 20px; transition: left .3s ease; z-index: 999;
+    }
+
+    .sidebar.active { left: 0; }
+
+    .sidebar a {
+      display: block; margin: 15px 0; font-size: 1.1rem; font-weight: 500; color: var(--text);
+    }
+
+    .content { max-width: 1200px; margin: 0 auto; padding: 20px; }
+
+    .banner {
+      background: url('https://images.unsplash.com/photo-1605902711622-cfb43c4432c6?fit=crop&w=1600&h=400') center/cover no-repeat;
+      height: 400px; display: flex; align-items: center; justify-content: center; font-size: 3rem; font-weight: 700; color: #fff; position: relative;
+    }
+
+    .banner:after {
+      content: ''; position: absolute; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0, 0, 0, 0.4); z-index: 1;
+    }
+
+    .banner-text {
+      z-index: 2; font-size: 3.5rem; font-weight: 700; color: #fff; text-align: center;
+    }
+
+    h1 {
+      text-align: center; margin: 30px 0; font-size: 2.5rem; color: var(--primary);
+    }
+
+    .grid {
+      display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 20px;
+    }
+
+    .card {
+      background: var(--card-bg); border-radius: 8px; overflow: hidden; transition: transform .3s; cursor: pointer;
+    }
+
+    .card:hover {
+      transform: translateY(-10px); box-shadow: 0 8px 25px rgba(0, 0, 0, 0.6);
+    }
+
+    .card img { height: 140px; object-fit: cover; }
+
+    .card-content {
+      padding: 12px; text-align: center;
+    }
+
+    .card-content h3 {
+      font-size: 1.2rem; font-weight: bold; color: var(--primary); text-transform: uppercase; letter-spacing: 0.5px;
+    }
+
+    .btn {
+      padding: 6px 12px; background: var(--primary); color: #fff; border: none; border-radius: 4px; cursor: pointer; transition: background .3s;
+    }
+
+    .btn:hover { background: #d62828; }
+
+    .info-section {
+      margin: 40px 0; background: var(--card-bg); padding: 20px; border-radius: 8px; line-height: 1.6;
+    }
+
+    .info-section h2 {
+      margin-bottom: 10px; color: var(--primary);
+    }
+
+    .modal {
+      display: none; position: fixed; inset: 0; background: rgba(0, 0, 0, 0.8); align-items: center; justify-content: center; padding: 20px; z-index: 1002;
+    }
+
+    .modal.active { display: flex; }
+
+    .modal-content {
+      background: var(--bg); border-radius: 12px; max-width: 900px; width: 100%; position: relative; padding: 15px;
+    }
+
+    .modal-content .close {
+      position: absolute; top: 10px; right: 20px; font-size: 2.5rem; color: var(--primary); cursor: pointer;
+    }
+
+    footer {
+      background: var(--secondary); padding: 20px; text-align: center; color: #aaa;
+    }
+
+    .social-link {
+      margin: 0 10px; font-size: 1.5rem; color: var(--text); transition: color 0.3s;
+    }
+
+    .social-link:hover { color: var(--primary); }
+
+    .music-control {
+      text-align: center; margin: 30px 0;
+    }
+
+    .music-control button {
+      padding: 8px 16px; background: var(--primary); color: #fff; border: none; border-radius: 4px; cursor: pointer;
+    }
+
+    .music-control button:hover { background: #d62828; }
+  </style>
+</head>
+<body>
+  <div class="sidebar" id="sidebar">
+    <a href="index.html">Ana Sayfa</a>
+    <a href="allgames.html">Tüm Oyunlar</a>
+    <a href="library.html">Kütüphane</a>
+    <a href="cart.html">Sepet</a>
+    <a href="forum.html">Forum</a>
+    <a href="about.html">Hakkımızda</a>
+    <a href="contact.html">İletişim</a>
+    <a href="minigames.html">Web Oyunları</a>
+  </div>
+
+  <header>
+    <div class="nav-container">
+      <div class="menu-btn" onclick="toggleSidebar()"><i class="fas fa-bars"></i></div>
+      <div class="logo">🎮 VIP<span style="color:var(--text)">Oyun</span></div>
+      <nav>
+        <a href="index.html">Ana Sayfa</a>
+        <a href="allgames.html">Tüm Oyunlar</a>
+        <a href="forum.html">Forum</a>
+      </nav>
+    </div>
+  </header>
+
+  <div class="banner">
+    <div class="banner-text">VIP Oyun Dünyasına Hoş Geldin!</div>
+  </div>
+
+  <div class="content">
+    <h1>En Popüler 5 Oyun</h1>
+    <div class="grid">
+      <!-- Oyun Kartları -->
+    </div>
+
+    <div class="info-section">
+      <h2>Web Oyunları</h2>
+      <div class="grid" id="miniGrid">
+        <div class="card" onclick="openMini(0)">
+          <img src="https://cdn-icons-png.flaticon.com/512/5968/5968269.png" alt="Chrome Dino" />
+          <div class="card-content"><h3>Chrome Dino</h3></div>
+        </div>
+        <div class="card" onclick="openMini(1)">
+          <img src="https://cdn-icons-png.flaticon.com/512/360/360775.png" alt="Snake" />
+          <div class="card-content"><h3>Snake</h3></div>
+        </div>
+        <div class="card" onclick="openMini(2)">
+          <img src="https://cdn-icons-png.flaticon.com/512/588/588617.png" alt="Tetris" />
+          <div class="card-content"><h3>Tetris</h3></div>
+        </div>
+        <div class="card" onclick="openMini(3)">
+          <img src="https://cdn-icons-png.flaticon.com/512/414/414927.png" alt="Pacman" />
+          <div class="card-content"><h3>Pacman</h3></div>
+        </div>
+        <div class="card" onclick="openMini(4)">
+          <img src="https://cdn-icons-png.flaticon.com/512/1023/1023292.png" alt="Flappy Bird" />
+          <div class="card-content"><h3>Flappy Bird</h3></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Müzik kontrol -->
+    <div class="music-control">
+      <button id="musicBtn" onclick="toggleMusic()">Müziği Kapat</button>
+    </div>
+    <audio id="bgMusic" autoplay loop>
+      <source src="https://www.bensound.com/bensound-music/bensound-epic.mp3" type="audio/mpeg">
+    </audio>
+  </div>
+
+  <!-- Mini Games Modal -->
+  <div id="miniModal" class="modal">
+    <div class="modal-content">
+      <span class="close" onclick="closeMini()">&times;</span>
+      <div class="modal-body" id="miniBody"></div>
+    </div>
+  </div>
+
+  <footer>
+    <div>
+      <a href="#" class="social-link"><i class="fab fa-facebook-f"></i></a>
+      <a href="#" class="social-link"><i class="fab fa-twitter"></i></a>
+      <a href="#" class="social-link"><i class="fab fa-instagram"></i></a>
+    </div>
+    <p>&copy; 2025 VIP Oyun Platformu | Tüm Hakları Saklıdır</p>
+  </footer>
+
+  <script>
+    function toggleSidebar() {
+      document.getElementById('sidebar').classList.toggle('active');
+    }
+
+    const miniGames = [
+      'https://chromedino.com/',
+      'https://playsnake.org/',
+      'https://tetris.com/play-tetris',
+      'https://www.retrogames.cz/play/pacman/',
+      'https://flappybird.io/'
+    ];
+
+    function openMini(i) {
+      const body = document.getElementById('miniBody');
+      body.innerHTML = `<iframe src="${miniGames[i]}" width="100%" height="500" frameborder="0" allowfullscreen></iframe>`;
+      document.getElementById('miniModal').classList.add('active');
+    }
+
+    function closeMini() {
+      document.getElementById('miniModal').classList.remove('active');
+    }
+
+    let musicPlaying = true;
+    const bgMusic = document.getElementById('bgMusic');
+    const musicBtn = document.getElementById('musicBtn');
+
+    function toggleMusic() {
+      if (musicPlaying) {
+        bgMusic.pause();
+        musicBtn.textContent = 'Müziği Aç';
+      } else {
+        bgMusic.play();
+        musicBtn.textContent = 'Müziği Kapat';
+      }
+      musicPlaying = !musicPlaying;
+    }
+  </script>
+</body>
+</html>

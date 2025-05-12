@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Hakkımızda - VIP Oyun Platformu</title>
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer">
+  <style>
+    :root {
+      --primary: #e63946;
+      --secondary: #1d3557;
+      --bg: #121212;
+      --card-bg: #1e1e1e;
+      --text: #eee;
+    }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: 'Roboto', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      padding-top: 60px;
+    }
+    header {
+      position: fixed;
+      top: 0; left: 0;
+      width: 100%;
+      background: var(--secondary);
+      z-index: 1000;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.6);
+    }
+    .nav-container {
+      max-width: 1200px;
+      margin: auto;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 10px 20px;
+    }
+    .logo {
+      font-size: 1.8rem;
+      font-weight: 700;
+      color: var(--primary);
+    }
+    .menu-btn {
+      font-size: 1.5rem;
+      cursor: pointer;
+      color: var(--text);
+      margin-right: 10px;
+    }
+    .sidebar {
+      position: fixed;
+      top: 0;
+      left: -250px;
+      width: 250px;
+      height: 100%;
+      background: var(--card-bg);
+      padding: 20px;
+      transition: left 0.3s ease;
+      z-index: 999;
+    }
+    .sidebar.active { left: 0; }
+    .sidebar a {
+      display: block;
+      margin: 10px 0;
+      color: var(--text);
+      font-weight: 500;
+    }
+    .content {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 20px;
+    }
+    .about-section {
+      background: var(--card-bg);
+      padding: 30px;
+      border-radius: 8px;
+      box-shadow: 0 6px 16px rgba(0,0,0,0.2);
+    }
+    .about-section h2 {
+      font-size: 2rem;
+      margin-bottom: 20px;
+    }
+    .about-section p {
+      font-size: 1.1rem;
+      line-height: 1.6;
+    }
+    .team-member {
+      display: flex;
+      align-items: center;
+      margin-top: 30px;
+    }
+    .team-member img {
+      width: 100px;
+      height: 100px;
+      border-radius: 50%;
+      margin-right: 20px;
+    }
+    .team-member h3 {
+      font-size: 1.3rem;
+      color: var(--primary);
+    }
+    footer {
+      background: var(--secondary);
+      padding: 20px;
+      text-align: center;
+      color: #aaa;
+      margin-top: 40px;
+    }
+  </style>
+</head>
+<body>
+  <div class="sidebar" id="sidebar">
+    <a href="index.html">Anasayfa</a>
+    <a href="allgames.html">Tüm Oyunlar</a>
+    <a href="library.html">Kütüphane</a>
+    <a href="cart.html">Sepet</a>
+    <a href="forum.html">Forum</a>
+    <a href="steam.html">Steam Bağlantısı</a>
+    <a href="about.html">Hakkımızda</a>
+    <a href="contact.html">İletişim</a>
+    <a href="minigames.html">Web Oyunları</a>
+  </div>
+
+  <header>
+    <div class="nav-container">
+      <div class="menu-btn" onclick="toggleSidebar()">☰</div>
+      <div class="logo">🎮 VIP<span style="color:var(--text)">Oyun</span></div>
+    </div>
+  </header>
+
+  <div class="content">
+    <div class="about-section">
+      <h2>Hakkımızda</h2>
+      <p>VIP Oyun Platformu, oyun tutkunları için en iyi dijital oyun deneyimini sunmayı hedefleyen bir platformdur. Oyun kütüphanemiz, eğlenceli ve heyecan verici birçok popüler oyunu içerir. Amacımız, kullanıcılarımıza kesintisiz bir oyun deneyimi ve güçlü bir oyun topluluğu sunmaktır.</p>
+      <p>Platformumuzda, en yeni ve en popüler oyunları keşfederken aynı zamanda sosyal etkileşimde bulunabileceğiniz forumlar, topluluklar ve etkileşimli özelliklere de sahip olacaksınız.</p>
+      
+      <div class="team-member">
+        <img src="https://upload.wikimedia.org/wikipedia/commons/8/8d/Developer.png" alt="Takım Üyesi">
+        <div>
+          <h3>Ahmet Yılmaz</h3>
+          <p>Kurucu & Yazılım Geliştirici</p>
+        </div>
+      </div>
+      <div class="team-member">
+        <img src="https://upload.wikimedia.org/wikipedia/commons/0/04/Avatar.png" alt="Takım Üyesi">
+        <div>
+          <h3>Fatma Demir</h3>
+          <p>Topluluk Yöneticisi</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <footer>
+    &copy; 2025 VIP Oyun Platformu | Tüm Hakları Saklıdır
+  </footer>
+
+  <script>
+    function toggleSidebar() {
+      document.getElementById('sidebar').classList.toggle('active');
+    }
+  </script>
+</body>
+</html>

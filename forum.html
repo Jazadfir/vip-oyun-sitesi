@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>VIP Oyun Platformu - Forum</title>
+  <!-- Google Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet" />
+  <!-- Font Awesome -->
+  <script src="https://kit.fontawesome.com/yourkit.js" crossorigin="anonymous"></script>
+  <style>
+    :root { --primary: #e63946; --secondary: #1d3557; --bg: #121212; --card-bg: #1e1e1e; --text: #eee; }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: 'Roboto', sans-serif; background: var(--bg); color: var(--text); padding-top: 60px; }
+    header { position: fixed; top: 0; left: 0; width: 100%; background: var(--secondary); display: flex; align-items: center; justify-content: space-between; padding: 10px 20px; z-index: 1000; }
+    .logo { font-size: 1.8rem; font-weight: 700; color: var(--primary); }
+    nav a { color: #fff; margin-left: 20px; text-decoration: none; font-weight: 500; }
+    nav a:hover { text-decoration: underline; }
+    main { max-width: 800px; margin: 0 auto; padding: 20px; }
+    h1 { text-align: center; margin-bottom: 20px; }
+    .post-form { background: var(--card-bg); padding: 20px; border-radius: 8px; margin-bottom: 30px; }
+    .post-form input, .post-form textarea { width: 100%; padding: 10px; margin-bottom: 10px; border: none; border-radius: 4px; background: #2a2a2a; color: var(--text); }
+    .post-form button { padding: 10px 20px; background: var(--primary); color: #fff; border: none; border-radius: 4px; cursor: pointer; }
+    .post-form button:hover { opacity: 0.9; }
+    .posts { display: flex; flex-direction: column; gap: 20px; }
+    .post { background: var(--card-bg); padding: 15px; border-radius: 6px; }
+    .post-header { display: flex; align-items: center; margin-bottom: 10px; }
+    .post-header img { width: 40px; height: 40px; border-radius: 50%; object-fit: cover; margin-right: 10px; }
+    .post-header .author { font-weight: 500; }
+    .post-header .time { margin-left: auto; font-size: 0.8rem; color: #888; }
+    .post-content p { margin-bottom: 10px; }
+    .post-content img { max-width: 100%; border-radius: 4px; margin-bottom: 10px; }
+    .reply-form { margin-top: 10px; }
+    .reply-form input, .reply-form textarea { width: 100%; padding: 8px; margin-bottom: 8px; border: none; border-radius: 4px; background: #2a2a2a; color: var(--text); }
+    .reply-form button { padding: 8px 16px; background: var(--secondary); color: #fff; border: none; border-radius: 4px; cursor: pointer; }
+    .replies { margin-top: 10px; border-top: 1px solid #333; padding-top: 10px; }
+    .reply { background: #2a2a2a; padding: 10px; border-radius: 4px; margin-bottom: 8px; }
+    .reply .author { font-weight: 500; }
+    .reply .time { font-size: 0.75rem; color: #888; margin-left: 5px; }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="logo">VIP<span style="color:var(--text)">Oyun</span></div>
+    <nav>
+       <a href="Game İndex 2.html">Anasayfa</a>
+        <a href="forum.html">Forum</a>
+        <a href="allgames.html">Tüm Oyunlar</a>
+    </nav>
+  </header>
+   <!-- Müzik kontrol -->
+    <div class="music-control">
+      <button id="musicBtn" onclick="toggleMusic()">Müziği Kapat</button>
+    </div>
+    <audio id="bgMusic" autoplay loop>
+      <source src="https://www.bensound.com/bensound-music/bensound-epic.mp3" type="audio/mpeg">
+    </audio>
+  </div>
+  <main>
+    <h1>Forum</h1>
+    <div class="post-form">
+      <input type="text" id="author" placeholder="Adınız" />
+      <textarea id="content" rows="3" placeholder="Mesajınız..."></textarea>
+      <input type="file" id="imageInput" accept="image/*" />
+      <button onclick="addPost()">Gönder</button>
+    </div>
+    <div class="posts" id="posts"></div>
+  </main>
+  <script>
+    const posts = JSON.parse(localStorage.getItem('posts') || '[]');
+    const postsContainer = document.getElementById('posts');
+
+    function renderPosts() {
+      postsContainer.innerHTML = '';
+      posts.slice().reverse().forEach(post => {
+        const div = document.createElement('div'); div.className = 'post';
+        div.innerHTML = `
+          <div class="post-header">
+            <img src="${post.image || 'https://via.placeholder.com/40'}" alt="avatar" />
+            <div class="author">${post.author}</div>
+            <div class="time">${new Date(post.time).toLocaleString('tr-TR')}</div>
+          </div>
+          <div class="post-content">
+            <p>${post.content}</p>
+            ${post.image ? `<img src="${post.image}" alt="post-image" />` : ''}
+          </div>
+        `;
+        postsContainer.appendChild(div);
+      });
+    }
+
+    function addPost() {
+      const author = document.getElementById('author').value.trim();
+      const content = document.getElementById('content').value.trim();
+      const imgInput = document.getElementById('imageInput');
+      if (!author || !content) return;
+      const file = imgInput.files[0];
+      if (file) {
+        const reader = new FileReader();
+        reader.onload = function(e) {
+          savePost(author, content, e.target.result);
+        };
+        reader.readAsDataURL(file);
+      } else {
+        savePost(author, content, null);
+      }
+    }
+
+    function savePost(author, content, image) {
+      posts.push({ author, content, image, time: Date.now() });
+      localStorage.setItem('posts', JSON.stringify(posts));
+      document.getElementById('author').value = '';
+      document.getElementById('content').value = '';
+      document.getElementById('imageInput').value = null;
+      renderPosts();
+    }
+
+    renderPosts();
+  </script>
+   <script>
+    function toggleSidebar() {
+      document.getElementById('sidebar').classList.toggle('active');
+    }
+
+    const miniGames = [
+      'https://chromedino.com/',
+      'https://playsnake.org/',
+      'https://tetris.com/play-tetris',
+      'https://www.retrogames.cz/play/pacman/',
+      'https://flappybird.io/'
+    ];
+
+    function openMini(i) {
+      const body = document.getElementById('miniBody');
+      body.innerHTML = `<iframe src="${miniGames[i]}" width="100%" height="500" frameborder="0" allowfullscreen></iframe>`;
+      document.getElementById('miniModal').classList.add('active');
+    }
+
+    function closeMini() {
+      document.getElementById('miniModal').classList.remove('active');
+    }
+
+    let musicPlaying = true;
+    const bgMusic = document.getElementById('bgMusic');
+    const musicBtn = document.getElementById('musicBtn');
+
+    function toggleMusic() {
+      if (musicPlaying) {
+        bgMusic.pause();
+        musicBtn.textContent = 'Müziği Aç';
+      } else {
+        bgMusic.play();
+        musicBtn.textContent = 'Müziği Kapat';
+      }
+      musicPlaying = !musicPlaying;
+    }
+  </script>
+</body>
+</html>

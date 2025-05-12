@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Tüm Oyunlar - VIP Oyun Platformu</title>
+  <!-- Google Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet" />
+  <!-- Font Awesome -->
+  <script src="https://kit.fontawesome.com/yourkit.js" crossorigin="anonymous"></script>
+  <style>
+    :root {--primary:#e63946;--secondary:#1d3557;--bg:#121212;--card-bg:#1e1e1e;--text:#eee;}
+    *, *::before, *::after{margin:0;padding:0;box-sizing:border-box;}
+    body{font-family:'Roboto',sans-serif;background:var(--bg);color:var(--text);padding-top:60px;}
+    a{color:inherit;text-decoration:none;}
+    img{display:block;max-width:100%;}
+    header{position:fixed;top:0;left:0;width:100%;background:var(--secondary);z-index:1000;box-shadow:0 2px 8px rgba(0,0,0,0.6);}
+    .nav-container{max-width:1200px;margin:auto;display:flex;align-items:center;justify-content:space-between;padding:10px 20px;}
+    .logo{font-size:1.8rem;font-weight:700;color:var(--primary);}
+    nav a{color:#fff;margin-left:20px;font-weight:500;}
+    nav a:hover{text-decoration:underline;}
+    .content{max-width:1200px;margin:0 auto;padding:20px;}
+    h1{text-align:center;margin-bottom:20px;font-size:2rem;color:var(--primary);}
+    .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:20px;}
+    .card{background:var(--card-bg);border-radius:8px;overflow:hidden;transition:transform .3s,box-shadow .3s;cursor:pointer;}
+    .card:hover{transform:translateY(-8px);box-shadow:0 8px 24px rgba(0,0,0,0.6);}
+    .card img{width:100%;height:120px;object-fit:cover;}
+    .card-content{padding:12px;}
+    .card-content h3{font-size:1rem;margin-bottom:6px;}
+    .btn{margin-top:8px;padding:6px 12px;background:var(--primary);color:#fff;border:none;border-radius:4px;cursor:pointer;font-size:.85rem;transition:background .3s;}
+    .btn:hover{background:#d62828;}
+    /* Modal */
+    .modal{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.7);align-items:center;justify-content:center;padding:20px;z-index:1001;}
+    .modal.active{display:flex;}
+    .modal-content{background:var(--card-bg);color:var(--text);border-radius:8px;overflow:auto;max-height:90%;width:100%;max-width:500px;position:relative;}
+    .modal-content .close{position:absolute;top:10px;right:15px;font-size:1.5rem;cursor:pointer;color:#fff;}
+    .modal-body{padding:20px;text-align:center;}
+    .modal-body img{max-width:100%;border-radius:4px;margin-bottom:10px;}
+    .modal-body h2{margin-bottom:10px;color:var(--primary);}    
+    footer{background:var(--secondary);padding:20px;text-align:center;color:#aaa;margin-top:40px;}
+  </style>
+</head>
+<body>
+  <header>
+    <div class="nav-container">
+      <div class="logo">VIP<span style="color:var(--text)">Oyun</span></div>
+      <nav>
+        <a href="Game İndex 2.html">Anasayfa</a>
+        <a href="forum.html">Forum</a>
+        <a href="allgames.html">Tüm Oyunlar</a>
+      </nav>
+    </div>
+  </header>
+  <div class="content">
+    <h1>Tüm Oyunlar (150)</h1>
+    <div class="grid" id="gamesGrid"></div>
+  </div>
+ <!-- Müzik kontrol -->
+    <div class="music-control">
+      <button id="musicBtn" onclick="toggleMusic()">Müziği Kapat</button>
+    </div>
+    <audio id="bgMusic" autoplay loop>
+      <source src="https://www.bensound.com/bensound-music/bensound-epic.mp3" type="audio/mpeg">
+    </audio>
+  </div>
+  <!-- Modal -->
+  <div id="gameModal" class="modal">
+    <div class="modal-content">
+      <span class="close" onclick="closeModal()">&times;</span>
+      <div class="modal-body">
+        <h2 id="mTitle"></h2>
+        <img id="mImg" src="" alt="" />
+        <p id="mDesc"></p>
+      </div>
+    </div>
+  </div>
+
+ <script>
+  // 150 oyun adı
+  const names = [
+    "The Legend of Zelda: Breath of the Wild", "Elden Ring", "Red Dead Redemption 2", "Grand Theft Auto V",
+    "The Witcher 3: Wild Hunt", "Minecraft", "Fortnite", "Apex Legends", "Valorant", "Counter-Strike 2",
+    "League of Legends", "Dota 2", "Overwatch 2", "Call of Duty: Modern Warfare III", "PUBG: Battlegrounds",
+    "Cyberpunk 2077", "Starfield", "Baldur’s Gate 3", "God of War Ragnarok", "Assassin’s Creed Mirage",
+    "Resident Evil 4 Remake", "Final Fantasy XVI", "Hades", "Hollow Knight", "Celeste",
+    "Dead Cells", "Stardew Valley", "Terraria", "Genshin Impact", "Honkai: Star Rail",
+    "Clash of Clans", "Clash Royale", "Brawl Stars", "Subway Surfers", "Candy Crush Saga",
+    "Angry Birds", "Plants vs. Zombies", "Monument Valley", "Limbo", "Inside",
+    "Ori and the Blind Forest", "Ori and the Will of the Wisps", "Among Us", "Fall Guys", "Roblox",
+    "Rocket League", "FIFA 24", "eFootball 2024", "NBA 2K24", "Gran Turismo 7",
+    "Forza Horizon 5", "Need for Speed Heat", "The Sims 4", "SimCity", "Cities: Skylines II",
+    "Civilization VI", "Age of Empires IV", "Crusader Kings III", "Hearts of Iron IV", "Total War: Warhammer III",
+    "Dark Souls III", "Sekiro: Shadows Die Twice", "Bloodborne", "Demon’s Souls", "Ghost of Tsushima",
+    "Horizon Forbidden West", "Ratchet & Clank: Rift Apart", "Spider-Man: Miles Morales", "Marvel’s Spider-Man 2", "Batman: Arkham Knight",
+    "Hogwarts Legacy", "Alan Wake 2", "Control", "BioShock Infinite", "Portal 2",
+    "Half-Life: Alyx", "Metro Exodus", "Far Cry 6", "Borderlands 3", "Destiny 2",
+    "Warframe", "Diablo IV", "Path of Exile", "Torchlight III", "Monster Hunter: World",
+    "Monster Hunter Rise", "Dragon’s Dogma II", "Palworld", "ARK: Survival Ascended", "Rust",
+    "DayZ", "7 Days to Die", "Don't Starve", "The Forest", "Sons of the Forest",
+    "Subnautica", "No Man’s Sky", "Kerbal Space Program", "Slime Rancher", "Firewatch",
+    "The Long Dark", "This War of Mine", "Papers, Please", "Return of the Obra Dinn", "Outer Wilds",
+    "The Witness", "Tetris Effect", "Beat Saber", "Superhot", "Thumper",
+    "Job Simulator", "Rec Room", "VRChat", "Phasmophobia", "Dead by Daylight",
+    "Five Nights at Freddy’s", "Goose Goose Duck", "The Binding of Isaac", "Slay the Spire", "Inscryption",
+    "Loop Hero", "Rogue Legacy 2", "Spelunky 2", "Katana Zero", "Hotline Miami",
+    "Risk of Rain 2", "Cuphead", "Shovel Knight", "Undertale", "Deltarune",
+    "Persona 5 Royal", "Yakuza: Like a Dragon", "Octopath Traveler II", "Fire Emblem Engage", "Xenoblade Chronicles 3",
+    "Pokémon Scarlet and Violet", "Super Mario Odyssey", "Super Mario Bros. Wonder", "Mario Kart 8 Deluxe", "Super Smash Bros. Ultimate",
+    "Splatoon 3", "Animal Crossing: New Horizons", "Pikmin 4", "Kirby and the Forgotten Land", "Bayonetta 3",
+    "Metroid Dread", "Donkey Kong Country: Tropical Freeze", "Sonic Frontiers", "Cuphead", "Inside"
+  ];
+
+  const grid = document.getElementById('gamesGrid');
+  names.forEach((n, i) => {
+    const imgUrl = `https://picsum.photos/seed/${encodeURIComponent(n)}/300/200`;
+    const card = document.createElement('div'); card.className = 'card';
+    card.innerHTML = `
+      <img src="${imgUrl}" alt="${n}" />
+      <div class="card-content">
+        <h3>${n}</h3>
+        <button class="btn" onclick="openModal(${i})">Detay</button>
+      </div>
+    `;
+    grid.appendChild(card);
+  });
+
+  // Modal functions
+  const modal = document.getElementById('gameModal');
+  function openModal(index) {
+    const title = names[index];
+    document.getElementById('mTitle').textContent = title;
+    document.getElementById('mImg').src = `https://picsum.photos/seed/${encodeURIComponent(title)}/400/300`;
+    document.getElementById('mDesc').textContent = `${title} için detaylı açıklama burada yer alacak.`;
+    modal.classList.add('active');
+  }
+  function closeModal() {
+    modal.classList.remove('active');
+  }
+
+  // Modal dışına tıklama ile kapama
+  modal.addEventListener('click', e => { if (e.target === modal) closeModal(); });
+</script>
+
+ <script>
+    function toggleSidebar() {
+      document.getElementById('sidebar').classList.toggle('active');
+    }
+
+    const miniGames = [
+      'https://chromedino.com/',
+      'https://playsnake.org/',
+      'https://tetris.com/play-tetris',
+      'https://www.retrogames.cz/play/pacman/',
+      'https://flappybird.io/'
+    ];
+
+    function openMini(i) {
+      const body = document.getElementById('miniBody');
+      body.innerHTML = `<iframe src="${miniGames[i]}" width="100%" height="500" frameborder="0" allowfullscreen></iframe>`;
+      document.getElementById('miniModal').classList.add('active');
+    }
+
+    function closeMini() {
+      document.getElementById('miniModal').classList.remove('active');
+    }
+
+    let musicPlaying = true;
+    const bgMusic = document.getElementById('bgMusic');
+    const musicBtn = document.getElementById('musicBtn');
+
+    function toggleMusic() {
+      if (musicPlaying) {
+        bgMusic.pause();
+        musicBtn.textContent = 'Müziği Aç';
+      } else {
+        bgMusic.play();
+        musicBtn.textContent = 'Müziği Kapat';
+      }
+      musicPlaying = !musicPlaying;
+    }
+  </script>
+
+  <footer>&copy; 2025 VIP Oyun Platformu</footer>
+</body>
+</html>
